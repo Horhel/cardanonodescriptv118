@@ -1,0 +1,43 @@
+sudo su -
+adduser cardano
+usermod -aG sudo cardano
+sudo su - cardano
+whoami
+sudo whoami
+sudo apt-get update -y
+sudo apt-get -y install python3 build-essential pkg-config libffi-dev libgmp-dev libssl-dev libtinfo-dev systemd libsystemd-dev libsodium-dev zlib1g-dev yarn make g++ jq libncursesw5 libtool autoconf git tmux htop
+export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+wget https://downloads.haskell.org/~cabal/cabal-install-3.2.0.0/cabal-install-3.2.0.0-x86_64-unknown-linux.tar.xz
+tar -xf cabal-install-3.2.0.0-x86_64-unknown-linux.tar.xz
+rm cabal-install-3.2.0.0-x86_64-unknown-linux.tar.xz cabal.sig
+mkdir -p ~/.local/bin
+mv cabal ~/.local/bin/
+echo "export PATH=~/.local/bin:$PATH" >> ~/.bashrc 
+source ~/.bashrc 
+echo $PATH
+cabal update
+cabal --version
+wget https://downloads.haskell.org/~ghc/8.6.5/ghc-8.6.5-x86_64-deb9-linux.tar.xz
+tar -xf ghc-8.6.5-x86_64-deb9-linux.tar.xz
+rm ghc-8.6.5-x86_64-deb9-linux.tar.xz
+cd ghc-8.6.5
+./configure
+sudo make install
+sudo apt install nano
+cd ..
+git clone https://github.com/input-output-hk/cardano-node.git
+cd cardano-node
+git fetch --all --tags && git tag
+git checkout tags/1.18.0
+echo -e "package cardano-crypto-praos\n flags: -external-libsodium-vrf" > cabal.project.local
+cabal build all
+cp -p dist-newstyle/build/x86_64-linux/ghc-8.6.5/cardano-cli-1.18.0/x/cardano-cli/build/cardano-cli/cardano-cli ~/.local/bin/
+cp -p dist-newstyle/build/x86_64-linux/ghc-8.6.5/cardano-node-1.18.0/x/cardano-node/build/cardano-node/cardano-node ~/.local/bin/
+which cardano-node && which cardano-cli
+cardano-node --version
+cardano-cli --version
+scripts/mainnet.sh
+echo -e "package cardano-crypto-praos\n flags: -external-libsodium-vrf" >/opt/cardano/cnode/scripts/cabal-build-all.sh
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt update
